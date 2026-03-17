@@ -1,9 +1,8 @@
 import {
   LayoutDashboard, BookOpen, Brain, Calendar, BarChart3, MessageSquare,
-  Timer, Target, StickyNote, Settings, LogOut, Flame
+  Timer, Target, StickyNote, Settings, LogOut, Trophy, Bell, User, Shield
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -23,12 +22,17 @@ const toolItems = [
   { title: "Pomodoro", url: "/pomodoro", icon: Timer },
   { title: "Goals", url: "/goals", icon: Target },
   { title: "Notes", url: "/notes", icon: StickyNote },
+  { title: "Reminders", url: "/reminders", icon: Bell },
+];
+
+const personItems = [
+  { title: "Profile", url: "/profile", icon: User },
+  { title: "Achievements", url: "/achievements", icon: Trophy },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
   const { signOut } = useAuth();
 
   return (
@@ -89,6 +93,44 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Personal</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {personItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      className="hover:bg-sidebar-accent/50"
+                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                    >
+                      <item.icon className="mr-2 h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>System</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/admin" className="hover:bg-sidebar-accent/50" activeClassName="bg-sidebar-accent text-sidebar-primary font-medium">
+                    <Shield className="mr-2 h-4 w-4" />
+                    {!collapsed && <span>Admin Panel</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

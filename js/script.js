@@ -3,35 +3,10 @@
 // ════════════════════════════════════════
 const S = {
   uid: 100,
-  subjects: [
-    {id:1,name:'Algorithms & DS',color:'#6c63ff',diff:'🔴 Hard',exam:'2026-04-15',chaps:12,done:7},
-    {id:2,name:'DBMS',color:'#38bdf8',diff:'🟡 Medium',exam:'2026-04-20',chaps:10,done:6},
-    {id:3,name:'Operating Systems',color:'#22d3a5',diff:'🔴 Hard',exam:'2026-04-18',chaps:15,done:9},
-    {id:4,name:'Machine Learning',color:'#f97316',diff:'🟡 Medium',exam:'2026-04-25',chaps:8,done:3},
-    {id:5,name:'Computer Networks',color:'#ec4899',diff:'🟢 Easy',exam:'2026-04-28',chaps:9,done:5},
-  ],
-  tasks: [
-    {id:1,title:'Binary Search Trees — Read chapter',sub:'Algorithms & DS',pri:'🔴 High',dl:'2026-03-18',hrs:2,done:false,day:'2026-03-17'},
-    {id:2,title:'ER Diagrams — Practice problems',sub:'DBMS',pri:'🟡 Medium',dl:'2026-03-19',hrs:1.5,done:true,day:'2026-03-17'},
-    {id:3,title:'Process Scheduling — Notes',sub:'Operating Systems',pri:'🔴 High',dl:'2026-03-17',hrs:2,done:false,day:'2026-03-17'},
-    {id:4,title:'Linear Regression — Implementation',sub:'Machine Learning',pri:'🟡 Medium',dl:'2026-03-20',hrs:3,done:false,day:'2026-03-17'},
-    {id:5,title:'Sorting Algorithms — Revise all',sub:'Algorithms & DS',pri:'🔴 High',dl:'2026-03-17',hrs:1,done:true,day:'2026-03-17'},
-    {id:6,title:'SQL Joins — Practice 20 queries',sub:'DBMS',pri:'🟡 Medium',dl:'2026-03-21',hrs:2,done:false,day:'2026-03-17'},
-    {id:7,title:'Memory Management deep dive',sub:'Operating Systems',pri:'🟢 Low',dl:'2026-03-22',hrs:1.5,done:false,day:'2026-03-18'},
-    {id:8,title:'Decision Trees — Watch lecture',sub:'Machine Learning',pri:'🟡 Medium',dl:'2026-03-23',hrs:1,done:true,day:'2026-03-18'},
-  ],
-  notes: [
-    {id:1,title:'BST Insertion Algorithm',sub:'Algorithms & DS',content:'Compare with root, go left if smaller, right if larger. O(log n) average, O(n) worst case for skewed tree.',link:'https://visualgo.net',date:'2026-03-16'},
-    {id:2,title:'Normalization Forms',sub:'DBMS',content:'1NF: Atomic values. 2NF: No partial dependencies. 3NF: No transitive dependencies. BCNF: Stricter version of 3NF.',link:'',date:'2026-03-15'},
-    {id:3,title:'CPU Scheduling Algorithms',sub:'Operating Systems',content:'FCFS, SJF, Round Robin, Priority Scheduling. Round Robin is most practical for time-sharing. Quantum affects context switch overhead.',link:'https://os.phil-opp.com',date:'2026-03-14'},
-    {id:4,title:'Gradient Descent Types',sub:'Machine Learning',content:'Batch: uses all data. SGD: one sample. Mini-batch: best of both. Learning rate critical — too high diverges, too low slow.',link:'',date:'2026-03-13'},
-  ],
-  goals: [
-    {id:1,title:'Study 6 hours daily',type:'Daily',target:'6 hours',prog:75,done:false},
-    {id:2,title:'Complete DS module',type:'Weekly',target:'4 chapters',prog:50,done:false},
-    {id:3,title:'Solve 30 practice problems',type:'Weekly',target:'30 problems',prog:90,done:false},
-    {id:4,title:'Revise all DBMS topics',type:'Monthly',target:'Full syllabus',prog:60,done:false},
-  ],
+  subjects: [],
+  tasks: [],
+  notes: [],
+  goals: [],
   chatHistory: [],
   timer: { sec:25*60, mode:'focus', running:false, interval:null, count:3 },
 };

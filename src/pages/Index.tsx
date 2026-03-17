@@ -27,17 +27,7 @@ export default function Index() {
         supabase.from("topics").select("id, status").eq("user_id", user.id),
         supabase.from("user_streaks").select("*").eq("user_id", user.id).single(),
       ]);
-      if (profileRes.data) {
-        setProfile(profileRes.data);
-        const createdAgo = Date.now() - new Date(profileRes.data.created_at).getTime();
-        const cleanedKey = `cleaned_init_${user.id}`;
-        if (createdAgo < 2 * 60 * 1000 && !localStorage.getItem(cleanedKey)) { // 2 mins
-          await supabase.from("subjects").delete().eq("user_id", user.id);
-          localStorage.setItem(cleanedKey, "true");
-          setStats({ subjects: 0, topics: 0, completedTopics: 0, streak: 0, points: 0 });
-          return;
-        }
-      }
+      if (profileRes.data) setProfile(profileRes.data);
       const topics = topicsRes.data || [];
       setStats({
         subjects: subjectsRes.data?.length || 0,

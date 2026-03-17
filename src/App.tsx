@@ -22,6 +22,10 @@ import Pomodoro from "./pages/Pomodoro";
 import Goals from "./pages/Goals";
 import Notes from "./pages/Notes";
 import Settings from "./pages/Settings";
+import Achievements from "./pages/Achievements";
+import Reminders from "./pages/Reminders";
+import Profile from "./pages/Profile";
+import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,6 +57,10 @@ const App = () => (
               <Route path="/goals" element={<Goals />} />
               <Route path="/notes" element={<Notes />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/achievements" element={<Achievements />} />
+              <Route path="/reminders" element={<Reminders />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin" element={<AdminPanel />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
