@@ -7,7 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Save } from "lucide-react";
+import { Save, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 export default function Settings() {
   const { user } = useAuth();
@@ -51,6 +55,27 @@ export default function Settings() {
     setLoading(false);
     if (error) toast.error(error.message);
     else toast.success("Profile updated!");
+  };
+
+  const handleResetData = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      await Promise.all([
+        supabase.from("subjects").delete().eq("user_id", user.id),
+        supabase.from("study_plans").delete().eq("user_id", user.id),
+        supabase.from("notes").delete().eq("user_id", user.id),
+        supabase.from("goals").delete().eq("user_id", user.id),
+        supabase.from("pomodoro_sessions").delete().eq("user_id", user.id),
+        supabase.from("chat_messages").delete().eq("user_id", user.id),
+        supabase.from("user_streaks").update({ current_streak: 0, longest_streak: 0, points: 0, last_study_date: null }).eq("user_id", user.id)
+      ]);
+      toast.success("All data has been reset!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to reset data");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -118,6 +143,36 @@ export default function Settings() {
               <Input type="number" min="5" max="30" value={form.break_duration} onChange={(e) => setForm({ ...form, break_duration: e.target.value })} />
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="glass border-destructive/30">
+        <CardHeader>
+          <CardTitle className="font-display text-destructive flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5" /> Danger Zone
+          </CardTitle>
+          <CardDescription>Permanently delete all your study data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Reset All Data</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="glass">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your subjects, topics, notes, and study history.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleResetData} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Reset Data
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </CardContent>
       </Card>
 
