@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyAI Pro — AI Study Planner</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════ AUTH SCREEN ═══════════════════ -->
+  <div id="auth-screen" class="auth-wrap">
+    <div class="auth-card">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div
+          style="width:60px;height:60px;background:linear-gradient(135deg,#6c63ff,#38bdf8);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px;box-shadow:0 6px 24px rgba(108,99,255,0.45);">
+          🧠</div>
+        <h1 style="font-size:24px;font-weight:800;margin-bottom:5px;">StudyAI Pro</h1>
+        <p style="color:var(--text2);font-size:13px;">Your intelligent AI-powered study companion</p>
+      </div>
+
+      <div class="tabs" style="margin-bottom:22px;" id="auth-tabs">
+        <div class="tab active" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="tab" onclick="switchAuthTab('signup')">Sign Up</div>
+      </div>
+
+      <div id="auth-login">
+        <div class="form-row"><label>Email address</label><input type="email" value="arjun@studyai.com"
+            placeholder="you@email.com"></div>
+        <div class="form-row"><label>Password</label><input type="password" value="password123" placeholder="••••••••">
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:18px;">
+          <a href="#" onclick="return false" style="font-size:12px;color:var(--accent2);text-decoration:none;">Forgot
+            password?</a>
+        </div>
+        <button class="btn btn-primary"
+          style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:12px;" onclick="doLogin()">
+          Sign In →
+        </button>
+        <div style="text-align:center;color:var(--text2);font-size:12px;margin:14px 0;">or continue with</div>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;border-radius:12px;" onclick="doLogin()">
+          🔐 Google
+        </button>
+      </div>
+
+      <div id="auth-signup" style="display:none;">
+        <div class="form-grid">
+          <div class="form-row"><label>Full Name</label><input type="text" placeholder="Arjun Kumar"></div>
+          <div class="form-row"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+        </div>
+        <div class="form-row"><label>Study Goal</label>
+          <select>
+            <option>🎯 Exam Preparation</option>
+            <option>💼 Placement</option>
+            <option>📚 Skill Building</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Password</label><input type="password" placeholder="Create a strong password">
+        </div>
+        <button class="btn btn-primary"
+          style="width:100%;justify-content:center;padding:12px;font-size:14px;border-radius:12px;margin-top:4px;"
+          onclick="doLogin()">
+          Create Account →
+        </button>
+      </div>
+
+      <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:18px;">
+        By continuing, you agree to our Terms of Service and Privacy Policy
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MAIN APP ═══════════════════ -->
+  <div id="main-app" class="app" style="display:none;">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🧠</div>
+        <div class="logo-text">
+          <h2>StudyAI</h2><span>Pro</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">Main</div>
+      <div class="nav-item active" onclick="go('dashboard',this)">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Dashboard</div>
+      </div>
+      <div class="nav-item" onclick="go('planner',this)">
+        <div class="nav-icon">🤖</div>
+        <div class="nav-label">AI Planner</div>
+        <div class="nav-badge">AI</div>
+      </div>
+      <div class="nav-item" onclick="go('calendar',this)">
+        <div class="nav-icon">📅</div>
+        <div class="nav-label">Calendar</div>
+      </div>
+      <div class="nav-item" onclick="go('subjects',this)">
+        <div class="nav-icon">📚</div>
+        <div class="nav-label">Subjects</div>
+      </div>
+      <div class="nav-item" onclick="go('tasks',this)">
+        <div class="nav-icon">✅</div>
+        <div class="nav-label">Tasks</div>
+        <div class="nav-badge green" id="badge-tasks">5</div>
+      </div>
+
+      <div class="sidebar-section">AI Tools</div>
+      <div class="nav-item" onclick="go('chat',this)">
+        <div class="nav-icon">💬</div>
+        <div class="nav-label">AI Assistant</div>
+      </div>
+      <div class="nav-item" onclick="go('recommend',this)">
+        <div class="nav-icon">💡</div>
+        <div class="nav-label">Recommendations</div>
+      </div>
+      <div class="nav-item" onclick="go('emergency',this)">
+        <div class="nav-icon">🚨</div>
+        <div class="nav-label">Exam Mode</div>
+      </div>
+
+      <div class="sidebar-section">Track</div>
+      <div class="nav-item" onclick="go('analytics',this)">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">Analytics</div>
+      </div>
+      <div class="nav-item" onclick="go('goals',this)">
+        <div class="nav-icon">🎯</div>
+        <div class="nav-label">Goals</div>
+      </div>
+      <div class="nav-item" onclick="go('gamification',this)">
+        <div class="nav-icon">🏆</div>
+        <div class="nav-label">Achievements</div>
+      </div>
+      <div class="nav-item" onclick="go('timer',this)">
+        <div class="nav-icon">⏱️</div>
+        <div class="nav-label">Pomodoro</div>
+      </div>
+      <div class="nav-item" onclick="go('notes',this)">
+        <div class="nav-icon">📝</div>
+        <div class="nav-label">Notes</div>
+      </div>
+
+      <div class="sidebar-section">Config</div>
+      <div class="nav-item" onclick="go('notifications',this)">
+        <div class="nav-icon">🔔</div>
+        <div class="nav-label">Reminders</div>
+      </div>
+      <div class="nav-item" onclick="go('profile',this)">
+        <div class="nav-icon">⚙️</div>
+        <div class="nav-label">Profile</div>
+      </div>
+      <div class="nav-item" onclick="go('admin',this)">
+        <div class="nav-icon">👑</div>
+        <div class="nav-label">Admin Panel</div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="profile-card" onclick="go('profile',null)">
+          <div class="avatar">AK</div>
+          <div>
+            <div class="profile-name">Arjun Kumar</div>
+            <div class="profile-role">B.Tech CSE · Year 3</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main" id="main-scroll">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div id="pg-dashboard" class="page active">
+        <div class="topbar">
+          <div class="topbar-title">Dashboard</div>
+          <div class="topbar-sub">Tuesday, 17 March 2026</div>
+          <button class="btn btn-ghost btn-sm" onclick="go('timer',null)">⏱️ Start Timer</button>
+          <button class="btn btn-primary btn-sm" onclick="go('planner',null)">🤖 Generate Plan</button>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-4" style="margin-bottom:18px;">
+            <div class="stat-card" style="--sc:var(--accent)">
+              <div class="stat-icon">📚</div>
+              <div class="stat-label">Today's Tasks</div>
+              <div class="stat-val">8</div>
+              <div class="stat-sub">3 completed ✓</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--success)">
+              <div class="stat-icon">⏱️</div>
+              <div class="stat-label">Study Hours</div>
+              <div class="stat-val">4.5h</div>
+              <div class="stat-sub">Goal: 6h today</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--warn)">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-label">Streak</div>
+              <div class="stat-val">12</div>
+              <div class="stat-sub">days in a row</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--pink)">
+              <div class="stat-icon">🏆</div>
+              <div class="stat-label">XP Points</div>
+              <div class="stat-val">2,450</div>
+              <div class="stat-sub">Level 8 · 82%</div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card">
+              <div class="section-head">
+                <h2>Today's Plan</h2><span class="badge badge-blue" id="today-count">8 tasks</span>
+              </div>
+              <div id="today-tasks"></div>
+              <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:8px;"
+                onclick="go('tasks',null)">View All Tasks →</button>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Exam Deadlines</h2>
+              </div>
+              <div id="deadlines-list"></div>
+              <div style="margin-top:14px;">
+                <div
+                  style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px;">
+                  <span>Weekly Goal Progress</span><span style="color:var(--accent2);">75%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width:75%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="section-head">
+                <h2>Study Streak</h2><span style="font-size:22px;">🔥</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:12px;" id="streak-row"></div>
+              <p style="font-size:12px;color:var(--text2);line-height:1.6;">12 days strong! Study at least <strong
+                  style="color:var(--text);">30 minutes</strong> today to keep your streak alive.</p>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Quick Actions</h2>
+              </div>
+              <div class="grid-2" style="gap:8px;">
+                <button class="btn btn-ghost"
+                  style="justify-content:center;flex-direction:column;gap:6px;padding:14px;height:72px;"
+                  onclick="go('timer',null)">⏱️<span style="font-size:11px;">Pomodoro</span></button>
+                <button class="btn btn-ghost"
+                  style="justify-content:center;flex-direction:column;gap:6px;padding:14px;height:72px;"
+                  onclick="go('planner',null)">🤖<span style="font-size:11px;">AI Plan</span></button>
+                <button class="btn btn-ghost"
+                  style="justify-content:center;flex-direction:column;gap:6px;padding:14px;height:72px;"
+                  onclick="go('notes',null)">📝<span style="font-size:11px;">Add Note</span></button>
+                <button class="btn btn-ghost"
+                  style="justify-content:center;flex-direction:column;gap:6px;padding:14px;height:72px;"
+                  onclick="go('emergency',null)">🚨<span style="font-size:11px;">Exam Mode</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ AI PLANNER ══ -->
+      <div id="pg-planner" class="page">
+        <div class="topbar">
+          <div class="topbar-title">🤖 AI Smart Planner</div><button class="btn btn-primary btn-sm"
+            onclick="genPlan()">✨ Generate Plan</button>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card">
+              <div class="section-head">
+                <h2>Plan Settings</h2>
+              </div>
+              <div class="form-row"><label>Plan Type</label><select id="plan-type">
+                  <option>Daily Plan</option>
+                  <option>Weekly Plan</option>
+                  <option>Exam-Focused Plan</option>
+                </select></div>
+              <div class="form-row"><label>Available Hours Today</label><input type="number" id="plan-hours" value="6"
+                  min="1" max="16"></div>
+              <div class="form-row"><label>Focus Strategy</label><select id="plan-focus">
+                  <option>Balanced</option>
+                  <option>Hard subjects first</option>
+                  <option>Quick wins first</option>
+                  <option>Exam priority only</option>
+                </select></div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="genPlan()">🤖 Generate
+                AI Plan</button>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Dynamic Rescheduling</h2><span class="badge badge-warn">⭐ Key Feature</span>
+              </div>
+              <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6;">Missed tasks? Let AI
+                intelligently redistribute your workload across future days.</p>
+              <div id="missed-tasks"></div>
+              <button class="btn btn-warn btn-sm" style="margin-top:10px;" onclick="doReschedule()">⚡ Auto-Reschedule
+                Missed</button>
+            </div>
+          </div>
+          <div class="card card-glow">
+            <div class="section-head">
+              <h2>Generated Plan</h2><span class="badge badge-teal">AI Generated</span>
+            </div>
+            <div id="plan-output" style="font-size:13px;color:var(--text2);line-height:1.8;">Click <strong
+                style="color:var(--accent2);">Generate AI Plan</strong> above to create your personalized schedule based
+              on your subjects, deadlines, and difficulty levels.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CALENDAR ══ -->
+      <div id="pg-calendar" class="page">
+        <div class="topbar">
+          <div class="topbar-title">📅 Calendar & Timetable</div>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-2">
+            <div class="card">
+              <div class="section-head">
+                <h2>March 2026</h2>
+                <div style="display:flex;gap:5px;"><button class="btn btn-ghost btn-xs">◀</button><button
+                    class="btn btn-ghost btn-xs">▶</button></div>
+              </div>
+              <div class="cal-grid" style="margin-bottom:8px;">
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">S</div>
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">M</div>
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">T</div>
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">W</div>
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">T</div>
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">F</div>
+                <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:5px;">S</div>
+              </div>
+              <div class="cal-grid" id="cal-grid"></div>
+              <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+                <span class="badge badge-blue" style="font-size:10px;">■ Today</span>
+                <span class="badge badge-green" style="font-size:10px;">• Tasks</span>
+                <span class="badge badge-red" style="font-size:10px;">■ Exam</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Mar 17 — Daily Schedule</h2>
+              </div>
+              <div id="daily-sched"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SUBJECTS ══ -->
+      <div id="pg-subjects" class="page">
+        <div class="topbar">
+          <div class="topbar-title">📚 Subjects & Topics</div><button class="btn btn-primary btn-sm"
+            onclick="openModal('subject')">+ Add Subject</button>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-3" id="subjects-grid"></div>
+        </div>
+      </div>
+
+      <!-- ══ TASKS ══ -->
+      <div id="pg-tasks" class="page">
+        <div class="topbar">
+          <div class="topbar-title">✅ Task Management</div><button class="btn btn-primary btn-sm"
+            onclick="openModal('task')">+ Add Task</button>
+        </div>
+        <div style="padding:26px;">
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;">
+            <input type="text" id="task-search" placeholder="🔍 Search tasks..." style="max-width:240px;"
+              oninput="renderTasks()">
+            <select id="tf-priority" onchange="renderTasks()" style="width:140px;">
+              <option value="">All Priority</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+            <select id="tf-status" onchange="renderTasks()" style="width:140px;">
+              <option value="">All Status</option>
+              <option>Pending</option>
+              <option>Completed</option>
+            </select>
+          </div>
+          <div id="tasks-list"></div>
+        </div>
+      </div>
+
+      <!-- ══ AI CHAT ══ -->
+      <div id="pg-chat" class="page" style="padding:0;display:flex;flex-direction:column;height:calc(100vh - 0px);">
+        <div class="topbar">
+          <div class="topbar-title">💬 AI Study Assistant</div><span class="badge badge-green">● Connected</span>
+        </div>
+        <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:6px;">
+        </div>
+        <div
+          style="padding:14px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:8px;flex-wrap:wrap;padding-bottom:8px;">
+          <button class="btn btn-ghost btn-xs" onclick="quickChat('Plan my study day for today')">📅 Plan my
+            day</button>
+          <button class="btn btn-ghost btn-xs" onclick="quickChat('What should I study right now?')">💡 What to
+            study</button>
+          <button class="btn btn-ghost btn-xs" onclick="quickChat('I have an exam in 3 days, help!')">🚨 Exam in 3
+            days</button>
+          <button class="btn btn-ghost btn-xs" onclick="quickChat('Show me my weak areas')">📊 Weak areas</button>
+        </div>
+        <div
+          style="padding:12px 14px 16px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:8px;">
+          <input type="text" id="chat-in"
+            placeholder="Ask me anything — 'Plan my week', 'I missed 2 hours', 'Help with sorting algorithms'..."
+            onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;">
+          <button class="btn btn-primary" onclick="sendChat()">Send ↗</button>
+        </div>
+      </div>
+
+      <!-- ══ RECOMMENDATIONS ══ -->
+      <div id="pg-recommend" class="page">
+        <div class="topbar">
+          <div class="topbar-title">💡 AI Recommendations</div><button class="btn btn-primary btn-sm"
+            onclick="renderRecommend()">🔄 Refresh</button>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card">
+              <div class="section-head">
+                <h2>Study Right Now</h2><span class="badge badge-blue">AI Pick</span>
+              </div>
+              <div id="rec-now"></div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Weak Areas</h2><span class="badge badge-red">Needs Work</span>
+              </div>
+              <div id="rec-weak"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <h2>Revision Schedule</h2>
+            </div>
+            <div id="rec-revision"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ANALYTICS ══ -->
+      <div id="pg-analytics" class="page">
+        <div class="topbar">
+          <div class="topbar-title">📊 Analytics & Progress</div>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-4" style="margin-bottom:18px;">
+            <div class="stat-card" style="--sc:var(--accent)">
+              <div class="stat-label">Total Hours</div>
+              <div class="stat-val">124h</div>
+              <div class="stat-sub">This month</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--success)">
+              <div class="stat-label">Completion</div>
+              <div class="stat-val">78%</div>
+              <div class="stat-sub">Tasks done</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--warn)">
+              <div class="stat-label">Avg/Day</div>
+              <div class="stat-val">5.2h</div>
+              <div class="stat-sub">Past 30 days</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--teal)">
+              <div class="stat-label">Best Day</div>
+              <div class="stat-val">9h</div>
+              <div class="stat-sub">Last Monday</div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card">
+              <div class="section-head">
+                <h2>Weekly Study Hours</h2>
+              </div>
+              <div class="bar-chart" id="analytics-chart" style="height:110px;"></div>
+              <div style="display:flex;gap:4px;margin-top:8px;" id="chart-labels"></div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Subject Progress</h2>
+              </div>
+              <div id="subj-progress"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <h2>Performance Trends</h2>
+            </div>
+            <div class="grid-3">
+              <div style="text-align:center;padding:16px;background:var(--bg3);border-radius:var(--r);">
+                <div style="font-size:28px;font-weight:800;color:var(--success);font-family:'Syne';">↗ 23%</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px;">Improvement this week</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg3);border-radius:var(--r);">
+                <div style="font-size:28px;font-weight:800;color:var(--warn);font-family:'Syne';">82%</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px;">Goal achievement rate</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg3);border-radius:var(--r);">
+                <div style="font-size:28px;font-weight:800;color:var(--accent2);font-family:'Syne';">12d</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px;">Longest streak</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ GOALS ══ -->
+      <div id="pg-goals" class="page">
+        <div class="topbar">
+          <div class="topbar-title">🎯 Goal Management</div><button class="btn btn-primary btn-sm"
+            onclick="openModal('goal')">+ Add Goal</button>
+        </div>
+        <div style="padding:26px;" id="goals-content"></div>
+      </div>
+
+      <!-- ══ GAMIFICATION ══ -->
+      <div id="pg-gamification" class="page">
+        <div class="topbar">
+          <div class="topbar-title">🏆 Achievements & Gamification</div>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card" style="text-align:center;padding:30px;">
+              <div style="font-size:52px;margin-bottom:10px;">⚡</div>
+              <div style="font-size:38px;font-weight:800;color:var(--warn);font-family:'Syne';">Level 8</div>
+              <div style="color:var(--text2);font-size:13px;margin:5px 0 16px;">Study Champion</div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span
+                  style="color:var(--text2)">2,450 XP</span><span style="color:var(--warn)">3,000 XP</span></div>
+              <div class="progress-track">
+                <div class="progress-fill"
+                  style="width:82%;background:linear-gradient(90deg,var(--warn),var(--orange));"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text2);margin-top:6px;">550 XP to Level 9</div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Active Streak</h2><span style="font-size:22px;">🔥</span>
+              </div>
+              <div style="text-align:center;padding:14px 0;">
+                <div style="font-size:56px;font-weight:800;color:var(--orange);font-family:'Syne';line-height:1;">12
+                </div>
+                <div style="font-size:13px;color:var(--text2);margin-top:4px;">consecutive days</div>
+              </div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;" id="full-streak"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <h2>Achievements</h2>
+            </div>
+            <div id="achievements"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TIMER ══ -->
+      <div id="pg-timer" class="page">
+        <div class="topbar">
+          <div class="topbar-title">⏱️ Pomodoro Timer</div>
+        </div>
+        <div style="padding:26px;max-width:480px;margin:0 auto;">
+          <div class="card" style="text-align:center;padding:32px;">
+            <div style="display:flex;gap:6px;justify-content:center;margin-bottom:24px;">
+              <button class="btn btn-sm" id="tm-focus" onclick="setMode('focus')"
+                style="background:rgba(108,99,255,0.2);color:var(--accent2);border:1px solid rgba(108,99,255,0.4);">Focus
+                25m</button>
+              <button class="btn btn-ghost btn-sm" id="tm-break" onclick="setMode('break')">Break 5m</button>
+              <button class="btn btn-ghost btn-sm" id="tm-long" onclick="setMode('long')">Long 15m</button>
+            </div>
+            <div class="timer-ring" id="timer-ring" style="--prog:360deg;">
+              <div class="timer-inner">
+                <div style="font-size:42px;font-weight:800;font-family:'Syne';" id="timer-disp">25:00</div>
+                <div style="font-size:12px;color:var(--text2);" id="timer-lbl">Focus Time</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:center;margin:24px 0 20px;">
+              <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()"
+                style="padding:11px 28px;font-size:14px;">▶ Start</button>
+              <button class="btn btn-ghost" onclick="resetTimer()">↺ Reset</button>
+            </div>
+            <div class="card-sm" style="text-align:left;margin-bottom:14px;">
+              <label style="margin-bottom:6px;">Currently Studying</label>
+              <select id="timer-subj">
+                <option>Algorithms & DS</option>
+                <option>DBMS</option>
+                <option>Operating Systems</option>
+                <option>Machine Learning</option>
+              </select>
+            </div>
+            <div
+              style="display:flex;justify-content:space-around;padding:14px;background:var(--bg3);border-radius:var(--r);">
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;font-family:'Syne';color:var(--accent2);" id="pomo-count">3
+                </div>
+                <div style="font-size:11px;color:var(--text2);">Pomodoros</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;font-family:'Syne';color:var(--success);">75m</div>
+                <div style="font-size:11px;color:var(--text2);">Focus Time</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;font-family:'Syne';color:var(--warn);">+150</div>
+                <div style="font-size:11px;color:var(--text2);">XP Earned</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NOTES ══ -->
+      <div id="pg-notes" class="page">
+        <div class="topbar">
+          <div class="topbar-title">📝 Notes & Resources</div><button class="btn btn-primary btn-sm"
+            onclick="openModal('note')">+ Add Note</button>
+        </div>
+        <div style="padding:26px;">
+          <div style="display:flex;gap:10px;margin-bottom:16px;">
+            <input type="text" id="note-search" placeholder="🔍 Search notes..." style="flex:1;"
+              oninput="renderNotes()">
+            <select id="note-filter" onchange="renderNotes()" style="width:160px;">
+              <option value="">All Subjects</option>
+              <option>Algorithms & DS</option>
+              <option>DBMS</option>
+              <option>Operating Systems</option>
+              <option>Machine Learning</option>
+            </select>
+          </div>
+          <div class="grid-3" id="notes-grid"></div>
+        </div>
+      </div>
+
+      <!-- ══ NOTIFICATIONS ══ -->
+      <div id="pg-notifications" class="page">
+        <div class="topbar">
+          <div class="topbar-title">🔔 Reminders & Notifications</div>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-2">
+            <div class="card">
+              <div class="section-head">
+                <h2>Notification Settings</h2>
+              </div>
+              <div id="notif-settings"></div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Recent Alerts</h2>
+              </div>
+              <div id="notif-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PROFILE ══ -->
+      <div id="pg-profile" class="page">
+        <div class="topbar">
+          <div class="topbar-title">⚙️ Profile & Settings</div><button class="btn btn-primary btn-sm"
+            onclick="alert('✅ Profile saved!')">💾 Save</button>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-2">
+            <div class="card">
+              <div
+                style="text-align:center;margin-bottom:22px;padding:20px;background:var(--bg3);border-radius:var(--r);margin:-20px -20px 20px;">
+                <div class="avatar" style="width:64px;height:64px;font-size:22px;margin:0 auto 10px;">AK</div>
+                <div style="font-size:16px;font-weight:700;">Arjun Kumar</div>
+                <div style="font-size:12px;color:var(--text2);">B.Tech Computer Science · Year 3</div>
+                <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;">
+                  <span class="badge badge-blue">Level 8</span>
+                  <span class="badge badge-warn">🔥 12 days</span>
+                </div>
+              </div>
+              <div class="form-row"><label>Full Name</label><input type="text" value="Arjun Kumar"></div>
+              <div class="form-row"><label>Email</label><input type="email" value="arjun@studyai.com"></div>
+              <div class="form-row"><label>Course</label><input type="text" value="B.Tech Computer Science"></div>
+              <div class="form-row"><label>Study Goal</label><select>
+                  <option selected>🎯 Exam Preparation</option>
+                  <option>💼 Placement</option>
+                  <option>📚 Skill Building</option>
+                </select></div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Study Preferences</h2>
+              </div>
+              <div class="form-row"><label>Daily Study Goal (hours)</label><input type="number" value="6" min="1"
+                  max="16"></div>
+              <div class="form-row"><label>Preferred Study Time</label>
+                <select>
+                  <option>🌅 Early Morning (5–8am)</option>
+                  <option selected>☀️ Morning (8am–12pm)</option>
+                  <option>🌆 Evening (4–8pm)</option>
+                  <option>🌙 Night (8pm–12am)</option>
+                </select>
+              </div>
+              <div class="form-row"><label>Break Style</label>
+                <select>
+                  <option selected>Pomodoro (25m + 5m)</option>
+                  <option>45m + 15m</option>
+                  <option>90m + 20m</option>
+                </select>
+              </div>
+              <div class="form-row"><label>Subject Priority</label>
+                <select>
+                  <option>Hard subjects first</option>
+                  <option selected>Balanced mix</option>
+                  <option>Easy warm-up first</option>
+                </select>
+              </div>
+              <div class="form-row"><label>Notification Preference</label>
+                <select>
+                  <option selected>All notifications</option>
+                  <option>Only deadlines</option>
+                  <option>Minimal</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EMERGENCY ══ -->
+      <div id="pg-emergency" class="page">
+        <div class="topbar">
+          <div class="topbar-title">🚨 Emergency Exam Mode</div>
+        </div>
+        <div style="padding:26px;">
+          <div class="emergency-banner">
+            <div style="font-size:34px;">🚨</div>
+            <div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Crash Study Planner</div>
+              <div style="font-size:13px;color:rgba(255,200,200,0.75);">High-priority emergency planning. Maximize
+                revision in minimum time.</div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card">
+              <div class="section-head">
+                <h2>Configure Exam</h2>
+              </div>
+              <div class="form-row"><label>Exam Name</label><input type="text" id="exam-name" value="Algorithms Final"
+                  placeholder="e.g. Algorithms Final Exam"></div>
+              <div class="form-grid">
+                <div class="form-row"><label>Days Until Exam</label><input type="number" id="exam-days" value="3"
+                    min="1" max="30"></div>
+                <div class="form-row"><label>Hours/Day Available</label><input type="number" id="exam-hrs" value="8"
+                    min="1" max="16"></div>
+              </div>
+              <button class="btn btn-danger" style="width:100%;justify-content:center;" onclick="genCrash()">🚨 Generate
+                Crash Plan</button>
+            </div>
+            <div class="card"
+              style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;">
+              <div style="font-size:64px;font-weight:800;color:var(--danger);font-family:'Syne';line-height:1;"
+                id="exam-cntdn">3</div>
+              <div style="font-size:16px;color:var(--text2);margin-top:4px;">days remaining</div>
+              <div style="font-size:14px;color:var(--text);font-weight:600;margin-top:8px;" id="exam-nm-disp">Algorithms
+                Final</div>
+            </div>
+          </div>
+          <div class="card card-glow">
+            <div class="section-head">
+              <h2>Crash Study Plan</h2><span class="badge badge-red">Emergency Mode</span>
+            </div>
+            <div id="crash-out" style="font-size:13px;color:var(--text2);line-height:1.8;">Click "Generate Crash Plan"
+              to get your day-by-day emergency schedule.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ADMIN ══ -->
+      <div id="pg-admin" class="page">
+        <div class="topbar">
+          <div class="topbar-title">👑 Admin Panel</div><span class="badge badge-blue">Super Admin</span>
+        </div>
+        <div style="padding:26px;">
+          <div class="grid-4" style="margin-bottom:18px;">
+            <div class="stat-card" style="--sc:var(--accent)">
+              <div class="stat-label">Total Users</div>
+              <div class="stat-val">1,284</div>
+              <div class="stat-sub">+23 this week</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--success)">
+              <div class="stat-label">Active Today</div>
+              <div class="stat-val">342</div>
+              <div class="stat-sub">26% of total</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--warn)">
+              <div class="stat-label">Plans Generated</div>
+              <div class="stat-val">8,762</div>
+              <div class="stat-sub">All time</div>
+            </div>
+            <div class="stat-card" style="--sc:var(--pink)">
+              <div class="stat-label">Study Hours</div>
+              <div class="stat-val">42K</div>
+              <div class="stat-sub">Total logged</div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="section-head">
+                <h2>Recent Users</h2>
+              </div>
+              <div id="admin-users"></div>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>System Status</h2>
+              </div>
+              <div id="admin-status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /app -->
+
+  <!-- MODALS -->
+  <div id="modal-subject" class="modal-bg" style="display:none;" onclick="if(event.target===this)closeModal('subject')">
+    <div class="modal">
+      <div class="modal-title">Add New Subject <span class="modal-close" onclick="closeModal('subject')">✕</span></div>
+      <div class="form-row"><label>Subject Name</label><input type="text" id="sub-name"
+          placeholder="e.g. Algorithms & DS"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Color Tag</label><input type="color" id="sub-color" value="#6c63ff"
+            style="height:42px;padding:4px;cursor:pointer;"></div>
+        <div class="form-row"><label>Difficulty</label><select id="sub-diff">
+            <option>🟢 Easy</option>
+            <option selected>🟡 Medium</option>
+            <option>🔴 Hard</option>
+          </select></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Exam Date</label><input type="date" id="sub-exam"></div>
+        <div class="form-row"><label>Total Chapters</label><input type="number" id="sub-chaps" value="10" min="1"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn btn-primary" onclick="addSubject()" style="flex:1;justify-content:center;">Add
+          Subject</button>
+        <button class="btn btn-ghost" onclick="closeModal('subject')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-task" class="modal-bg" style="display:none;" onclick="if(event.target===this)closeModal('task')">
+    <div class="modal">
+      <div class="modal-title">Add New Task <span class="modal-close" onclick="closeModal('task')">✕</span></div>
+      <div class="form-row"><label>Task Title</label><input type="text" id="task-inp-title"
+          placeholder="e.g. Complete Binary Trees chapter"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Subject</label><select id="task-inp-sub">
+            <option>Algorithms & DS</option>
+            <option>DBMS</option>
+            <option>Operating Systems</option>
+            <option>Machine Learning</option>
+            <option>Computer Networks</option>
+          </select></div>
+        <div class="form-row"><label>Priority</label><select id="task-inp-pri">
+            <option>🔴 High</option>
+            <option selected>🟡 Medium</option>
+            <option>🟢 Low</option>
+          </select></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Deadline</label><input type="date" id="task-inp-dl"></div>
+        <div class="form-row"><label>Est. Hours</label><input type="number" id="task-inp-hrs" value="2" min="0.5"
+            step="0.5"></div>
+      </div>
+      <div class="form-row"><label>Notes (optional)</label><textarea id="task-inp-notes"
+          placeholder="Any details..."></textarea></div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn btn-primary" onclick="addTask()" style="flex:1;justify-content:center;">Add Task</button>
+        <button class="btn btn-ghost" onclick="closeModal('task')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-note" class="modal-bg" style="display:none;" onclick="if(event.target===this)closeModal('note')">
+    <div class="modal">
+      <div class="modal-title">Add Note <span class="modal-close" onclick="closeModal('note')">✕</span></div>
+      <div class="form-row"><label>Title</label><input type="text" id="note-inp-title" placeholder="Note title...">
+      </div>
+      <div class="form-row"><label>Subject</label><select id="note-inp-sub">
+          <option>Algorithms & DS</option>
+          <option>DBMS</option>
+          <option>Operating Systems</option>
+          <option>Machine Learning</option>
+        </select></div>
+      <div class="form-row"><label>Content</label><textarea id="note-inp-content" placeholder="Your notes here..."
+          style="min-height:120px;"></textarea></div>
+      <div class="form-row"><label>Resource Link (optional)</label><input type="url" id="note-inp-link"
+          placeholder="https://..."></div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn btn-primary" onclick="addNote()" style="flex:1;justify-content:center;">Save Note</button>
+        <button class="btn btn-ghost" onclick="closeModal('note')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-goal" class="modal-bg" style="display:none;" onclick="if(event.target===this)closeModal('goal')">
+    <div class="modal">
+      <div class="modal-title">Add Goal <span class="modal-close" onclick="closeModal('goal')">✕</span></div>
+      <div class="form-row"><label>Goal Description</label><input type="text" id="goal-inp-title"
+          placeholder="e.g. Complete DS syllabus"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Type</label><select id="goal-inp-type">
+            <option>Daily</option>
+            <option selected>Weekly</option>
+            <option>Monthly</option>
+          </select></div>
+        <div class="form-row"><label>Target</label><input type="text" id="goal-inp-target"
+            placeholder="e.g. 6 hours/day"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn btn-primary" onclick="addGoal()" style="flex:1;justify-content:center;">Add Goal</button>
+        <button class="btn btn-ghost" onclick="closeModal('goal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
