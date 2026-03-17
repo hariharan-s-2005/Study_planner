@@ -9,7 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, ArrowLeft, CheckCircle2, Circle, Clock } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, CheckCircle2, Circle, Clock, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -62,6 +66,14 @@ export default function SubjectDetail() {
     fetchData();
   };
 
+  const handleClearAll = async () => {
+    if (!user || !id) return;
+    const { error } = await supabase.from("topics").delete().eq("subject_id", id);
+    if (error) return toast.error(error.message);
+    toast.success("All topics cleared!");
+    fetchData();
+  };
+
   const handleDelete = async (topicId: string) => {
     await supabase.from("topics").delete().eq("id", topicId);
     toast.success("Topic deleted!");
@@ -82,10 +94,31 @@ export default function SubjectDetail() {
 
       <div className="flex justify-between items-center">
         <p className="text-muted-foreground">{topics.length} topics</p>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="gradient-primary text-primary-foreground"><Plus className="mr-2 h-4 w-4" /> Add Topic</Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          {topics.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10"><Trash2 className="mr-2 h-4 w-4" /> Clear All</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="glass">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete all topics?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all topics for this subject. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleClearAll} className="bg-destructive text-destructive-foreground">Delete All</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="gradient-primary text-primary-foreground"><Plus className="mr-2 h-4 w-4" /> Add Topic</Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle className="font-display">Add Topic</DialogTitle></DialogHeader>
             <div className="space-y-4 mt-4">
@@ -132,7 +165,8 @@ export default function SubjectDetail() {
           </DialogContent>
         </Dialog>
       </div>
-
+    </div>
+    
       <div className="space-y-2">
         {topics.map((t, i) => (
           <motion.div key={t.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}>

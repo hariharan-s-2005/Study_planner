@@ -6,7 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, Edit2, BookOpen } from "lucide-react";
+import { Plus, Trash2, Edit2, BookOpen, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -61,6 +65,14 @@ export default function Subjects() {
     fetchSubjects();
   };
 
+  const handleClearAll = async () => {
+    if (!user) return;
+    const { error } = await supabase.from("subjects").delete().eq("user_id", user.id);
+    if (error) return toast.error(error.message);
+    toast.success("All subjects cleared!");
+    fetchSubjects();
+  };
+
   const openEdit = (s: any) => {
     setEditId(s.id); setName(s.name); setColor(s.color); setOpen(true);
   };
@@ -72,33 +84,55 @@ export default function Subjects() {
           <h1 className="font-display text-3xl font-bold">Subjects</h1>
           <p className="text-muted-foreground mt-1">Manage your subjects and topics</p>
         </div>
-        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setName(""); } }}>
-          <DialogTrigger asChild>
-            <Button className="gradient-primary text-primary-foreground"><Plus className="mr-2 h-4 w-4" /> Add Subject</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="font-display">{editId ? "Edit" : "Add"} Subject</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Name</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Mathematics" />
-              </div>
-              <div className="space-y-2">
-                <Label>Color</Label>
-                <div className="flex gap-2 flex-wrap">
-                  {COLORS.map((c) => (
-                    <button key={c} onClick={() => setColor(c)} className={`h-8 w-8 rounded-full border-2 transition-all ${color === c ? "border-foreground scale-110" : "border-transparent"}`} style={{ backgroundColor: c }} />
-                  ))}
+        <div className="flex items-center gap-2">
+          {subjects.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10"><Trash2 className="mr-2 h-4 w-4" /> Clear All</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="glass">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete all subjects?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all your subjects and topics. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleClearAll} className="bg-destructive text-destructive-foreground">Delete All</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+
+          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setName(""); } }}>
+            <DialogTrigger asChild>
+              <Button className="gradient-primary text-primary-foreground"><Plus className="mr-2 h-4 w-4" /> Add Subject</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="font-display">{editId ? "Edit" : "Add"} Subject</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Mathematics" />
                 </div>
+                <div className="space-y-2">
+                  <Label>Color</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {COLORS.map((c) => (
+                      <button key={c} onClick={() => setColor(c)} className={`h-8 w-8 rounded-full border-2 transition-all ${color === c ? "border-foreground scale-110" : "border-transparent"}`} style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
+                </div>
+                <Button onClick={handleSave} className="w-full gradient-primary text-primary-foreground">
+                  {editId ? "Update" : "Add"} Subject
+                </Button>
               </div>
-              <Button onClick={handleSave} className="w-full gradient-primary text-primary-foreground">
-                {editId ? "Update" : "Add"} Subject
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {subjects.length === 0 ? (
